@@ -10,12 +10,24 @@ App::uses('AppController', 'Controller');
 class ProblemsController extends AppController {
 
 /**
+ *  Layout
+ *
+ * @var string
+ */
+	public $layout = 'bootstrap';
+
+/**
+ * Helpers
+ *
+ * @var array
+ */
+	public $helpers = array('TwitterBootstrap.BootstrapHtml', 'TwitterBootstrap.BootstrapForm', 'TwitterBootstrap.BootstrapPaginator');
+/**
  * Components
  *
  * @var array
  */
 	public $components = array('Paginator', 'Session');
-
 /**
  * index method
  *
@@ -29,16 +41,15 @@ class ProblemsController extends AppController {
 /**
  * view method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function view($id = null) {
-		if (!$this->Problem->exists($id)) {
-			throw new NotFoundException(__('Invalid problem'));
+		$this->Problem->id = $id;
+		if (!$this->Problem->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('problem')));
 		}
-		$options = array('conditions' => array('Problem.' . $this->Problem->primaryKey => $id));
-		$this->set('problem', $this->Problem->find('first', $options));
+		$this->set('problem', $this->Problem->read(null, $id));
 	}
 
 /**
@@ -49,11 +60,26 @@ class ProblemsController extends AppController {
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Problem->create();
+               debug($this->request);
 			if ($this->Problem->save($this->request->data)) {
-				$this->Session->setFlash(__('The problem has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('problem')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				//$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The problem could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('problem')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		}
 		$categories = $this->Problem->Category->find('list');
@@ -64,24 +90,37 @@ class ProblemsController extends AppController {
 /**
  * edit method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->Problem->exists($id)) {
-			throw new NotFoundException(__('Invalid problem'));
+		$this->Problem->id = $id;
+		if (!$this->Problem->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('problem')));
 		}
-		if ($this->request->is(array('post', 'put'))) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Problem->save($this->request->data)) {
-				$this->Session->setFlash(__('The problem has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('problem')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The problem could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('problem')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		} else {
-			$options = array('conditions' => array('Problem.' . $this->Problem->primaryKey => $id));
-			$this->request->data = $this->Problem->find('first', $options);
+			$this->request->data = $this->Problem->read(null, $id);
 		}
 		$categories = $this->Problem->Category->find('list');
 		$users = $this->Problem->User->find('list');
@@ -91,21 +130,62 @@ class ProblemsController extends AppController {
 /**
  * delete method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
 		$this->Problem->id = $id;
 		if (!$this->Problem->exists()) {
-			throw new NotFoundException(__('Invalid problem'));
+			throw new NotFoundException(__('Invalid %s', __('problem')));
 		}
-		$this->request->allowMethod('post', 'delete');
 		if ($this->Problem->delete()) {
-			$this->Session->setFlash(__('The problem has been deleted.'));
-		} else {
-			$this->Session->setFlash(__('The problem could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				__('The %s deleted', __('problem')),
+				'alert',
+				array(
+					'plugin' => 'TwitterBootstrap',
+					'class' => 'alert-success'
+				)
+			);
+			$this->redirect(array('action' => 'index'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		$this->Session->setFlash(
+			__('The %s was not deleted', __('problem')),
+			'alert',
+			array(
+				'plugin' => 'TwitterBootstrap',
+				'class' => 'alert-error'
+			)
+		);
+		$this->redirect(array('action' => 'index'));
+	}
+
+/**
+ * answer method
+ *
+ * @param string $id
+ * @return void
+ * @omega999 create
+ */
+	public function answer() {
+		//if (!$this->request->is('post')) {
+		//	throw new MethodNotAllowedException();
+		//}
+		//$this->Problem->id = $id;
+		//if (!$this->Problem->exists()) {
+		//	throw new NotFoundException(__('Invalid %s', __('problem')));
+		//}
+		//$this->Session->setFlash(
+		//	__('The %s was not deleted', __('problem')),
+		//	'alert',
+		//	array(
+		//		'plugin' => 'TwitterBootstrap',
+		//		'class' => 'alert-error'
+		//	)
+		//);
+		//$this->redirect(array('action' => 'index'));
 	}
 }
