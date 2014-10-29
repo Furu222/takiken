@@ -10,12 +10,24 @@ App::uses('AppController', 'Controller');
 class ActivitiesController extends AppController {
 
 /**
+ *  Layout
+ *
+ * @var string
+ */
+	public $layout = 'bootstrap';
+
+/**
+ * Helpers
+ *
+ * @var array
+ */
+	public $helpers = array('TwitterBootstrap.BootstrapHtml', 'TwitterBootstrap.BootstrapForm', 'TwitterBootstrap.BootstrapPaginator');
+/**
  * Components
  *
  * @var array
  */
 	public $components = array('Paginator', 'Session');
-
 /**
  * index method
  *
@@ -29,16 +41,15 @@ class ActivitiesController extends AppController {
 /**
  * view method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function view($id = null) {
-		if (!$this->Activity->exists($id)) {
-			throw new NotFoundException(__('Invalid activity'));
+		$this->Activity->id = $id;
+		if (!$this->Activity->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('activity')));
 		}
-		$options = array('conditions' => array('Activity.' . $this->Activity->primaryKey => $id));
-		$this->set('activity', $this->Activity->find('first', $options));
+		$this->set('activity', $this->Activity->read(null, $id));
 	}
 
 /**
@@ -50,10 +61,24 @@ class ActivitiesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->Activity->create();
 			if ($this->Activity->save($this->request->data)) {
-				$this->Session->setFlash(__('The activity has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('activity')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The activity could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('activity')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		}
 		$users = $this->Activity->User->find('list');
@@ -64,24 +89,37 @@ class ActivitiesController extends AppController {
 /**
  * edit method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->Activity->exists($id)) {
-			throw new NotFoundException(__('Invalid activity'));
+		$this->Activity->id = $id;
+		if (!$this->Activity->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('activity')));
 		}
-		if ($this->request->is(array('post', 'put'))) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Activity->save($this->request->data)) {
-				$this->Session->setFlash(__('The activity has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('activity')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The activity could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('activity')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		} else {
-			$options = array('conditions' => array('Activity.' . $this->Activity->primaryKey => $id));
-			$this->request->data = $this->Activity->find('first', $options);
+			$this->request->data = $this->Activity->read(null, $id);
 		}
 		$users = $this->Activity->User->find('list');
 		$problems = $this->Activity->Problem->find('list');
@@ -91,21 +129,37 @@ class ActivitiesController extends AppController {
 /**
  * delete method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
 		$this->Activity->id = $id;
 		if (!$this->Activity->exists()) {
-			throw new NotFoundException(__('Invalid activity'));
+			throw new NotFoundException(__('Invalid %s', __('activity')));
 		}
-		$this->request->allowMethod('post', 'delete');
 		if ($this->Activity->delete()) {
-			$this->Session->setFlash(__('The activity has been deleted.'));
-		} else {
-			$this->Session->setFlash(__('The activity could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				__('The %s deleted', __('activity')),
+				'alert',
+				array(
+					'plugin' => 'TwitterBootstrap',
+					'class' => 'alert-success'
+				)
+			);
+			$this->redirect(array('action' => 'index'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		$this->Session->setFlash(
+			__('The %s was not deleted', __('activity')),
+			'alert',
+			array(
+				'plugin' => 'TwitterBootstrap',
+				'class' => 'alert-error'
+			)
+		);
+		$this->redirect(array('action' => 'index'));
 	}
+
 }

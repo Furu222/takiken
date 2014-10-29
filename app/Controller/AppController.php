@@ -34,12 +34,39 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $components = array('DebugKit.Toolbar');
+    public $components = array(
+        'DebugKit.Toolbar',
+        'Session',
+        'Auth' => array(
+            'authenticate' => array(
+                'Form' => array(
+                    'userModel' => 'User', // モデルの指定
+                    'fields' => array('username' => 'username', 'password' => 'password')  // フィールドの指定
+                )
+            ),
+            'loginAction' => array( // ログインアクションの指定
+                'controller' => 'users',
+                'action' => 'login',
+            ),
+            'authError' => 'ユーザ名とパスワードを入力してください。', // 未認証時のエラーメッセージ
+            'loginRedirect' => array(
+                'controller' => 'users', 
+                'action' => 'index'
+            ), // ログインした後のリダイレクト先をusers/indexに
+            'logoutRedirect' => array(
+                'controller' => 'pages', 
+                'action' => 'display', 'home'
+            ) // ログアウト時のリダイレクト先を/に設定
+        )
+    );
     public $helpers = array(
         'Session',
         'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
         'Form' => array('className' => 'TwitterBootstrap.BootstrapForm'),
         'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
     );
-    public $layout = 'TwitterBootstrap.default';
+
+    public function beforeFilter(){
+        $this->Auth->allow('login', 'logout', 'add','index','view','answer');
+    }
 }

@@ -1,60 +1,54 @@
-<div class="activities index">
-	<h2><?php echo __('Activities'); ?></h2>
-	<table cellpadding="0" cellspacing="0">
-	<thead>
-	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('user_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('action_type'); ?></th>
-			<th><?php echo $this->Paginator->sort('problem_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('created'); ?></th>
-			<th><?php echo $this->Paginator->sort('modified'); ?></th>
-			<th class="actions"><?php echo __('Actions'); ?></th>
-	</tr>
-	</thead>
-	<tbody>
-	<?php foreach ($activities as $activity): ?>
-	<tr>
-		<td><?php echo h($activity['Activity']['id']); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($activity['User']['id'], array('controller' => 'users', 'action' => 'view', $activity['User']['id'])); ?>
-		</td>
-		<td><?php echo h($activity['Activity']['action_type']); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($activity['Problem']['id'], array('controller' => 'problems', 'action' => 'view', $activity['Problem']['id'])); ?>
-		</td>
-		<td><?php echo h($activity['Activity']['created']); ?>&nbsp;</td>
-		<td><?php echo h($activity['Activity']['modified']); ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $activity['Activity']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $activity['Activity']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $activity['Activity']['id']), array(), __('Are you sure you want to delete # %s?', $activity['Activity']['id'])); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</tbody>
-	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
+<div class="row-fluid">
+	<div class="span9">
+		<h2><?php echo __('List %s', __('Activities'));?></h2>
+
+		<p>
+			<?php echo $this->BootstrapPaginator->counter(array('format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')));?>
+		</p>
+
+		<table class="table">
+			<tr>
+				<th><?php echo $this->BootstrapPaginator->sort('id');?></th>
+				<th><?php echo $this->BootstrapPaginator->sort('user_id');?></th>
+				<th><?php echo $this->BootstrapPaginator->sort('action_type');?></th>
+				<th><?php echo $this->BootstrapPaginator->sort('problem_id');?></th>
+				<th><?php echo $this->BootstrapPaginator->sort('created');?></th>
+				<th><?php echo $this->BootstrapPaginator->sort('modified');?></th>
+				<th class="actions"><?php echo __('Actions');?></th>
+			</tr>
+		<?php foreach ($activities as $activity): ?>
+			<tr>
+				<td><?php echo h($activity['Activity']['id']); ?>&nbsp;</td>
+				<td>
+					<?php echo $this->Html->link($activity['User']['id'], array('controller' => 'users', 'action' => 'view', $activity['User']['id'])); ?>
+				</td>
+				<td><?php echo h($activity['Activity']['action_type']); ?>&nbsp;</td>
+				<td>
+					<?php echo $this->Html->link($activity['Problem']['id'], array('controller' => 'problems', 'action' => 'view', $activity['Problem']['id'])); ?>
+				</td>
+				<td><?php echo h($activity['Activity']['created']); ?>&nbsp;</td>
+				<td><?php echo h($activity['Activity']['modified']); ?>&nbsp;</td>
+				<td class="actions">
+					<?php echo $this->Html->link(__('View'), array('action' => 'view', $activity['Activity']['id'])); ?>
+					<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $activity['Activity']['id'])); ?>
+					<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $activity['Activity']['id']), null, __('Are you sure you want to delete # %s?', $activity['Activity']['id'])); ?>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+		</table>
+
+		<?php echo $this->BootstrapPaginator->pagination(); ?>
 	</div>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Activity'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Problems'), array('controller' => 'problems', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Problem'), array('controller' => 'problems', 'action' => 'add')); ?> </li>
-	</ul>
+	<div class="span3">
+		<div class="well" style="padding: 8px 0; margin-top:8px;">
+		<ul class="nav nav-list">
+			<li class="nav-header"><?php echo __('Actions'); ?></li>
+			<li><?php echo $this->Html->link(__('New %s', __('Activity')), array('action' => 'add')); ?></li>
+			<li><?php echo $this->Html->link(__('List %s', __('Users')), array('controller' => 'users', 'action' => 'index')); ?> </li>
+			<li><?php echo $this->Html->link(__('New %s', __('User')), array('controller' => 'users', 'action' => 'add')); ?> </li>
+			<li><?php echo $this->Html->link(__('List %s', __('Problems')), array('controller' => 'problems', 'action' => 'index')); ?> </li>
+			<li><?php echo $this->Html->link(__('New %s', __('Problem')), array('controller' => 'problems', 'action' => 'add')); ?> </li>
+		</ul>
+		</div>
+	</div>
 </div>

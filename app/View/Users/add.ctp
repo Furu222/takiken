@@ -1,32 +1,41 @@
-<div class="users form">
-<?php echo $this->Form->create('User'); ?>
-	<fieldset>
-		<legend><?php echo __('Add User'); ?></legend>
-	<?php
-		echo $this->Form->input('username');
-		echo $this->Form->input('password');
-		echo $this->Form->input('email');
-		echo $this->Form->input('image');
-		echo $this->Form->input('twitter_id');
-		echo $this->Form->input('twitter_access_token');
-		echo $this->Form->input('facebook_id');
-		echo $this->Form->input('facebook_access_token');
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-
-		<li><?php echo $this->Html->link(__('List Users'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Activities'), array('controller' => 'activities', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Activity'), array('controller' => 'activities', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Answer Histories'), array('controller' => 'answer_histories', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Answer History'), array('controller' => 'answer_histories', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Problems'), array('controller' => 'problems', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Problem'), array('controller' => 'problems', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List User Points'), array('controller' => 'user_points', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User Point'), array('controller' => 'user_points', 'action' => 'add')); ?> </li>
-	</ul>
+<div class="row-fluid">
+	<div class="span9">
+		<?php echo $this->BootstrapForm->create('User', array('class' => 'form-horizontal'));?>
+			<fieldset>
+				<legend><?php echo __('ユーザ新規登録'); ?></legend>
+				<?php
+                    echo $this->BootstrapForm->input('username', array(
+                        'type' => 'text',
+                        'label' => 'ユーザ名',
+                        'required' => 'required',
+                        'helpInline' => '<span class="label label-important">' . __('必須(英数字と記号のみ)') . '</span>&nbsp;')
+                     );
+                	echo $this->BootstrapForm->input('email', array(
+                        'type' => 'text',
+                        'label' => 'メールアドレス',
+                        'required' => 'required',
+					'helpInline' => '<span class="label label-important">' . __('必須') . '</span>&nbsp;')
+				);
+				echo $this->BootstrapForm->input('password', array(
+                        'label' => 'パスワード',
+                        'required' => 'required',
+					'helpInline' => '<span class="label label-important">' . __('必須') . '</span>&nbsp;')
+                     );
+                    echo $this->BootstrapForm->input('password_confirm', array(
+                        'label' => 'パスワード確認',
+                        'requried' => 'required',
+                        'helpInline' => '<span class="label label-important">' . __('必須') . '</span>&nbsp;')
+                    );     
+        			?>
+				<?php echo $this->BootstrapForm->submit(__('新規登録'));?>
+			</fieldset>
+		<?php echo $this->BootstrapForm->end();?>
+	</div>
+	<div class="span3">
+		<div class="well" style="padding: 8px 0; margin-top:8px;">
+		<ul class="nav nav-list">
+			<li class="nav-header"><?php echo __('Actions'); ?></li>
+		</ul>
+		</div>
+	</div>
 </div>

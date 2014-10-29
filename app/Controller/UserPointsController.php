@@ -10,12 +10,24 @@ App::uses('AppController', 'Controller');
 class UserPointsController extends AppController {
 
 /**
+ *  Layout
+ *
+ * @var string
+ */
+	public $layout = 'bootstrap';
+
+/**
+ * Helpers
+ *
+ * @var array
+ */
+	public $helpers = array('TwitterBootstrap.BootstrapHtml', 'TwitterBootstrap.BootstrapForm', 'TwitterBootstrap.BootstrapPaginator');
+/**
  * Components
  *
  * @var array
  */
 	public $components = array('Paginator', 'Session');
-
 /**
  * index method
  *
@@ -29,16 +41,15 @@ class UserPointsController extends AppController {
 /**
  * view method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function view($id = null) {
-		if (!$this->UserPoint->exists($id)) {
-			throw new NotFoundException(__('Invalid user point'));
+		$this->UserPoint->id = $id;
+		if (!$this->UserPoint->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('user point')));
 		}
-		$options = array('conditions' => array('UserPoint.' . $this->UserPoint->primaryKey => $id));
-		$this->set('userPoint', $this->UserPoint->find('first', $options));
+		$this->set('userPoint', $this->UserPoint->read(null, $id));
 	}
 
 /**
@@ -50,10 +61,24 @@ class UserPointsController extends AppController {
 		if ($this->request->is('post')) {
 			$this->UserPoint->create();
 			if ($this->UserPoint->save($this->request->data)) {
-				$this->Session->setFlash(__('The user point has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('user point')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The user point could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('user point')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		}
 		$users = $this->UserPoint->User->find('list');
@@ -63,24 +88,37 @@ class UserPointsController extends AppController {
 /**
  * edit method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->UserPoint->exists($id)) {
-			throw new NotFoundException(__('Invalid user point'));
+		$this->UserPoint->id = $id;
+		if (!$this->UserPoint->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('user point')));
 		}
-		if ($this->request->is(array('post', 'put'))) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->UserPoint->save($this->request->data)) {
-				$this->Session->setFlash(__('The user point has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('user point')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The user point could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('user point')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		} else {
-			$options = array('conditions' => array('UserPoint.' . $this->UserPoint->primaryKey => $id));
-			$this->request->data = $this->UserPoint->find('first', $options);
+			$this->request->data = $this->UserPoint->read(null, $id);
 		}
 		$users = $this->UserPoint->User->find('list');
 		$this->set(compact('users'));
@@ -89,21 +127,37 @@ class UserPointsController extends AppController {
 /**
  * delete method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
 		$this->UserPoint->id = $id;
 		if (!$this->UserPoint->exists()) {
-			throw new NotFoundException(__('Invalid user point'));
+			throw new NotFoundException(__('Invalid %s', __('user point')));
 		}
-		$this->request->allowMethod('post', 'delete');
 		if ($this->UserPoint->delete()) {
-			$this->Session->setFlash(__('The user point has been deleted.'));
-		} else {
-			$this->Session->setFlash(__('The user point could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				__('The %s deleted', __('user point')),
+				'alert',
+				array(
+					'plugin' => 'TwitterBootstrap',
+					'class' => 'alert-success'
+				)
+			);
+			$this->redirect(array('action' => 'index'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		$this->Session->setFlash(
+			__('The %s was not deleted', __('user point')),
+			'alert',
+			array(
+				'plugin' => 'TwitterBootstrap',
+				'class' => 'alert-error'
+			)
+		);
+		$this->redirect(array('action' => 'index'));
 	}
+
 }

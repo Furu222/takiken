@@ -10,12 +10,24 @@ App::uses('AppController', 'Controller');
 class CategoriesController extends AppController {
 
 /**
+ *  Layout
+ *
+ * @var string
+ */
+	public $layout = 'bootstrap';
+
+/**
+ * Helpers
+ *
+ * @var array
+ */
+	public $helpers = array('TwitterBootstrap.BootstrapHtml', 'TwitterBootstrap.BootstrapForm', 'TwitterBootstrap.BootstrapPaginator');
+/**
  * Components
  *
  * @var array
  */
 	public $components = array('Paginator', 'Session');
-
 /**
  * index method
  *
@@ -29,16 +41,15 @@ class CategoriesController extends AppController {
 /**
  * view method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function view($id = null) {
-		if (!$this->Category->exists($id)) {
-			throw new NotFoundException(__('Invalid category'));
+		$this->Category->id = $id;
+		if (!$this->Category->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('category')));
 		}
-		$options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
-		$this->set('category', $this->Category->find('first', $options));
+		$this->set('category', $this->Category->read(null, $id));
 	}
 
 /**
@@ -50,10 +61,24 @@ class CategoriesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->Category->create();
 			if ($this->Category->save($this->request->data)) {
-				$this->Session->setFlash(__('The category has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('category')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('category')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		}
 	}
@@ -61,45 +86,74 @@ class CategoriesController extends AppController {
 /**
  * edit method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->Category->exists($id)) {
-			throw new NotFoundException(__('Invalid category'));
+		$this->Category->id = $id;
+		if (!$this->Category->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('category')));
 		}
-		if ($this->request->is(array('post', 'put'))) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Category->save($this->request->data)) {
-				$this->Session->setFlash(__('The category has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('category')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('category')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		} else {
-			$options = array('conditions' => array('Category.' . $this->Category->primaryKey => $id));
-			$this->request->data = $this->Category->find('first', $options);
+			$this->request->data = $this->Category->read(null, $id);
 		}
 	}
 
 /**
  * delete method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
 		$this->Category->id = $id;
 		if (!$this->Category->exists()) {
-			throw new NotFoundException(__('Invalid category'));
+			throw new NotFoundException(__('Invalid %s', __('category')));
 		}
-		$this->request->allowMethod('post', 'delete');
 		if ($this->Category->delete()) {
-			$this->Session->setFlash(__('The category has been deleted.'));
-		} else {
-			$this->Session->setFlash(__('The category could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				__('The %s deleted', __('category')),
+				'alert',
+				array(
+					'plugin' => 'TwitterBootstrap',
+					'class' => 'alert-success'
+				)
+			);
+			$this->redirect(array('action' => 'index'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		$this->Session->setFlash(
+			__('The %s was not deleted', __('category')),
+			'alert',
+			array(
+				'plugin' => 'TwitterBootstrap',
+				'class' => 'alert-error'
+			)
+		);
+		$this->redirect(array('action' => 'index'));
 	}
+
 }

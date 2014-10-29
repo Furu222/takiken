@@ -1,34 +1,50 @@
-<div class="users form">
-<?php echo $this->Form->create('User'); ?>
-	<fieldset>
-		<legend><?php echo __('Edit User'); ?></legend>
-	<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('username');
-		echo $this->Form->input('password');
-		echo $this->Form->input('email');
-		echo $this->Form->input('image');
-		echo $this->Form->input('twitter_id');
-		echo $this->Form->input('twitter_access_token');
-		echo $this->Form->input('facebook_id');
-		echo $this->Form->input('facebook_access_token');
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-
-		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('User.id')), array(), __('Are you sure you want to delete # %s?', $this->Form->value('User.id'))); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Activities'), array('controller' => 'activities', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Activity'), array('controller' => 'activities', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Answer Histories'), array('controller' => 'answer_histories', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Answer History'), array('controller' => 'answer_histories', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Problems'), array('controller' => 'problems', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Problem'), array('controller' => 'problems', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List User Points'), array('controller' => 'user_points', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User Point'), array('controller' => 'user_points', 'action' => 'add')); ?> </li>
-	</ul>
+<div class="row-fluid">
+	<div class="span9">
+		<?php echo $this->BootstrapForm->create('User', array('class' => 'form-horizontal'));?>
+			<fieldset>
+				<legend><?php echo __('Edit %s', __('User')); ?></legend>
+				<?php
+				echo $this->BootstrapForm->input('username', array(
+					'required' => 'required',
+					'helpInline' => '<span class="label label-important">' . __('Required') . '</span>&nbsp;')
+				);
+				echo $this->BootstrapForm->input('password', array(
+					'required' => 'required',
+					'helpInline' => '<span class="label label-important">' . __('Required') . '</span>&nbsp;')
+				);
+				echo $this->BootstrapForm->input('email', array(
+					'required' => 'required',
+					'helpInline' => '<span class="label label-important">' . __('Required') . '</span>&nbsp;')
+				);
+				echo $this->BootstrapForm->input('image', array(
+					'required' => 'required',
+					'helpInline' => '<span class="label label-important">' . __('Required') . '</span>&nbsp;')
+				);
+				echo $this->BootstrapForm->input('twitter_id');
+				echo $this->BootstrapForm->input('twitter_access_token');
+				echo $this->BootstrapForm->input('facebook_id');
+				echo $this->BootstrapForm->input('facebook_access_token');
+				echo $this->BootstrapForm->hidden('id');
+				?>
+				<?php echo $this->BootstrapForm->submit(__('Submit'));?>
+			</fieldset>
+		<?php echo $this->BootstrapForm->end();?>
+	</div>
+	<div class="span3">
+		<div class="well" style="padding: 8px 0; margin-top:8px;">
+		<ul class="nav nav-list">
+			<li class="nav-header"><?php echo __('Actions'); ?></li>
+			<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('User.id')), null, __('Are you sure you want to delete # %s?', $this->Form->value('User.id'))); ?></li>
+			<li><?php echo $this->Html->link(__('List %s', __('Users')), array('action' => 'index'));?></li>
+			<li><?php echo $this->Html->link(__('List %s', __('Activities')), array('controller' => 'activities', 'action' => 'index')); ?></li>
+			<li><?php echo $this->Html->link(__('New %s', __('Activity')), array('controller' => 'activities', 'action' => 'add')); ?></li>
+			<li><?php echo $this->Html->link(__('List %s', __('Answer Histories')), array('controller' => 'answer_histories', 'action' => 'index')); ?></li>
+			<li><?php echo $this->Html->link(__('New %s', __('Answer History')), array('controller' => 'answer_histories', 'action' => 'add')); ?></li>
+			<li><?php echo $this->Html->link(__('List %s', __('Problems')), array('controller' => 'problems', 'action' => 'index')); ?></li>
+			<li><?php echo $this->Html->link(__('New %s', __('Problem')), array('controller' => 'problems', 'action' => 'add')); ?></li>
+			<li><?php echo $this->Html->link(__('List %s', __('User Points')), array('controller' => 'user_points', 'action' => 'index')); ?></li>
+			<li><?php echo $this->Html->link(__('New %s', __('User Point')), array('controller' => 'user_points', 'action' => 'add')); ?></li>
+		</ul>
+		</div>
+	</div>
 </div>

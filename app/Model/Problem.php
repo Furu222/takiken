@@ -26,7 +26,7 @@ class Problem extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 			'minLength' => array(
-				'rule' => array('minLength'),
+				'rule' => array('minLength', 1),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -44,7 +44,7 @@ class Problem extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 			'minLength' => array(
-				'rule' => array('minLength'),
+				'rule' => array('minLength',1),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -62,7 +62,7 @@ class Problem extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 			'minLength' => array(
-				'rule' => array('minLength'),
+				'rule' => array('minLength',1),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

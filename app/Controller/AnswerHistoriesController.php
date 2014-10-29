@@ -10,12 +10,24 @@ App::uses('AppController', 'Controller');
 class AnswerHistoriesController extends AppController {
 
 /**
+ *  Layout
+ *
+ * @var string
+ */
+	public $layout = 'bootstrap';
+
+/**
+ * Helpers
+ *
+ * @var array
+ */
+	public $helpers = array('TwitterBootstrap.BootstrapHtml', 'TwitterBootstrap.BootstrapForm', 'TwitterBootstrap.BootstrapPaginator');
+/**
  * Components
  *
  * @var array
  */
 	public $components = array('Paginator', 'Session');
-
 /**
  * index method
  *
@@ -29,16 +41,15 @@ class AnswerHistoriesController extends AppController {
 /**
  * view method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function view($id = null) {
-		if (!$this->AnswerHistory->exists($id)) {
-			throw new NotFoundException(__('Invalid answer history'));
+		$this->AnswerHistory->id = $id;
+		if (!$this->AnswerHistory->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('answer history')));
 		}
-		$options = array('conditions' => array('AnswerHistory.' . $this->AnswerHistory->primaryKey => $id));
-		$this->set('answerHistory', $this->AnswerHistory->find('first', $options));
+		$this->set('answerHistory', $this->AnswerHistory->read(null, $id));
 	}
 
 /**
@@ -50,10 +61,24 @@ class AnswerHistoriesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->AnswerHistory->create();
 			if ($this->AnswerHistory->save($this->request->data)) {
-				$this->Session->setFlash(__('The answer history has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('answer history')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The answer history could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('answer history')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		}
 		$users = $this->AnswerHistory->User->find('list');
@@ -64,24 +89,37 @@ class AnswerHistoriesController extends AppController {
 /**
  * edit method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->AnswerHistory->exists($id)) {
-			throw new NotFoundException(__('Invalid answer history'));
+		$this->AnswerHistory->id = $id;
+		if (!$this->AnswerHistory->exists()) {
+			throw new NotFoundException(__('Invalid %s', __('answer history')));
 		}
-		if ($this->request->is(array('post', 'put'))) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->AnswerHistory->save($this->request->data)) {
-				$this->Session->setFlash(__('The answer history has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					__('The %s has been saved', __('answer history')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-success'
+					)
+				);
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The answer history could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					__('The %s could not be saved. Please, try again.', __('answer history')),
+					'alert',
+					array(
+						'plugin' => 'TwitterBootstrap',
+						'class' => 'alert-error'
+					)
+				);
 			}
 		} else {
-			$options = array('conditions' => array('AnswerHistory.' . $this->AnswerHistory->primaryKey => $id));
-			$this->request->data = $this->AnswerHistory->find('first', $options);
+			$this->request->data = $this->AnswerHistory->read(null, $id);
 		}
 		$users = $this->AnswerHistory->User->find('list');
 		$problems = $this->AnswerHistory->Problem->find('list');
@@ -91,21 +129,37 @@ class AnswerHistoriesController extends AppController {
 /**
  * delete method
  *
- * @throws NotFoundException
  * @param string $id
  * @return void
  */
 	public function delete($id = null) {
+		if (!$this->request->is('post')) {
+			throw new MethodNotAllowedException();
+		}
 		$this->AnswerHistory->id = $id;
 		if (!$this->AnswerHistory->exists()) {
-			throw new NotFoundException(__('Invalid answer history'));
+			throw new NotFoundException(__('Invalid %s', __('answer history')));
 		}
-		$this->request->allowMethod('post', 'delete');
 		if ($this->AnswerHistory->delete()) {
-			$this->Session->setFlash(__('The answer history has been deleted.'));
-		} else {
-			$this->Session->setFlash(__('The answer history could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				__('The %s deleted', __('answer history')),
+				'alert',
+				array(
+					'plugin' => 'TwitterBootstrap',
+					'class' => 'alert-success'
+				)
+			);
+			$this->redirect(array('action' => 'index'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		$this->Session->setFlash(
+			__('The %s was not deleted', __('answer history')),
+			'alert',
+			array(
+				'plugin' => 'TwitterBootstrap',
+				'class' => 'alert-error'
+			)
+		);
+		$this->redirect(array('action' => 'index'));
 	}
+
 }
