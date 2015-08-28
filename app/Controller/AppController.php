@@ -69,4 +69,21 @@ class AppController extends Controller {
     public function beforeFilter(){
         $this->Auth->allow('login', 'logout', 'add','index','view','answer');
     }
+
+    public function api_rest($method, $uri, $query = null, $data = null){
+        $ch = curl_init();
+        $basic_url = "http://sakumon.jp/app/LK_API/";
+        $options = array(
+            CURLOPT_URL => $basic_url.$uri.'?'.$query,
+            CURLOPT_HEADER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 120, // タイムアウトは2分にしています
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_POSTFIELDS => http_build_query($data), // URLエンコードして application/x-www-form-urlencoded でエンコード。URLエンコードしないとmultipart/form-dataになる
+        );
+        curl_setopt_array($ch, $options);
+        $response = json_decode(curl_exec($ch), true); // 第2引数をtrueにすると連想配列で返ってくる
+        curl_close($ch);
+        return $response;
+    } 
 }
